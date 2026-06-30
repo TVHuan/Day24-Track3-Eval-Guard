@@ -1,7 +1,7 @@
 # LLM Judge Bias Report — Phase B
 
-**Sinh viên:** [Họ Tên]  
-**Ngày:** [Ngày làm lab]  
+**Sinh viên:** Tạ Văn Huấn  
+**Ngày:** 30/6/2026  
 **Judge model:** gpt-4o-mini
 
 ---
