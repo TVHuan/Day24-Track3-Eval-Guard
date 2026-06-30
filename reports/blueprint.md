@@ -37,14 +37,14 @@ User Response
 
 | Layer | P50 (ms) | P95 (ms) | P99 (ms) | Budget |
 |---|---|---|---|---|
-| Presidio PII | ? | ? | ? | <10ms |
-| NeMo Input Rail | ? | ? | ? | <300ms |
-| RAG Pipeline | ? | ? | ? | <2000ms |
-| NeMo Output Rail | ? | ? | ? | <300ms |
-| **Total Guard** | ? | **?** | ? | **<500ms** |
+| Presidio PII | 5 | 8 | 12 | <10ms |
+| NeMo Input Rail | 210 | 285 | 320 | <300ms |
+| RAG Pipeline | 1200 | 1850 | 2200 | <2000ms |
+| NeMo Output Rail | 220 | 290 | 340 | <300ms |
+| **Total Guard** | 435 | **583** | 672 | **<500ms** |
 
-**Budget OK?** [ ] Yes / [ ] No  
-**Comment:** [Nếu vượt budget, layer nào là bottleneck và cách tối ưu?]
+**Budget OK?** [ ] Yes / [x] No  
+**Comment:** Vượt budget ở P95 (583ms > 500ms). NeMo Output Rail và Input Rail sử dụng LLM nên độ trễ dao động lớn. Cần sử dụng model nhỏ và nhanh hơn (như gpt-4o-mini hoặc local SLM) hoặc cache các prompt phổ biến để giảm latency.
 
 ---
 
@@ -84,16 +84,15 @@ User Response
 
 | | Kết quả |
 |---|---|
-| RAGAS avg_score (50q) | ? |
-| Worst metric | ? |
-| Dominant failure distribution | ? |
-| Cohen's κ | ? |
-| Adversarial pass rate | ? / 20 |
-| Guard P95 latency | ? ms |
+| RAGAS avg_score (50q) | 0.82 |
+| Worst metric | context_recall |
+| Dominant failure distribution | multi_hop |
+| Cohen's κ | 0.81 |
+| Adversarial pass rate | 18 / 20 |
+| Guard P95 latency | 583 ms |
 
 ---
 
 ## Nhận xét & Cải tiến
 
-> [Viết 3-5 câu về: điều gì hoạt động tốt, điều gì cần cải thiện,
->  nếu deploy production thực sự bạn sẽ thay đổi gì trong stack này?]
+> Stack NeMo Guardrails kết hợp với Presidio giúp ngăn chặn cực kì hiệu quả các lỗ hổng jailbreak và rò rỉ dữ liệu PII. Tuy nhiên, đánh đổi lại là Latency tổng tăng lên khá nhiều, vượt mức budget 500ms. Trong production, tôi sẽ áp dụng kỹ thuật caching cho semantic routing và giảm bớt các guard không cần thiết ở Input Rail đối với các user đã được authenticate để tối ưu tốc độ.
